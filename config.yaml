@@ -1,0 +1,7 @@
+checkerboard_width: 10
+checkerboard_height: 7
+square_size_mm: 115.70
+cam_model: "fisheye"
+checkerboard_images_dir: "fisheye_cam_chessboard_imgs"
+show_debug: false
+calib_xml_name: "fisheye_calib.xml"

@@ -1,0 +1,20 @@
+[
+{
+  "directory": "/root/workspace/cpp-camera-calib/build",
+  "command": "/usr/bin/c++ -DPROJECT_DIR=\\\"/root/workspace/cpp-camera-calib\\\" -DRESULT_DIR=\\\"/root/workspace/cpp-camera-calib/result\\\" -DRES_DIR=\\\"/root/workspace/cpp-camera-calib/res\\\" -DSPDLOG_COMPILED_LIB -DSPDLOG_FMT_EXTERNAL -DYAML_CPP_STATIC_DEFINE -isystem /usr/local/include/opencv4 -isystem /vcpkg/installed/x64-linux/include -O3 -DNDEBUG -std=gnu++17 -o CMakeFiles/calib-lib.dir/src/OpenCVCamCalib.cpp.o -c /root/workspace/cpp-camera-calib/src/OpenCVCamCalib.cpp",
+  "file": "/root/workspace/cpp-camera-calib/src/OpenCVCamCalib.cpp",
+  "output": "CMakeFiles/calib-lib.dir/src/OpenCVCamCalib.cpp.o"
+},
+{
+  "directory": "/root/workspace/cpp-camera-calib/build",
+  "command": "/usr/bin/c++ -DPROJECT_DIR=\\\"/root/workspace/cpp-camera-calib\\\" -DRESULT_DIR=\\\"/root/workspace/cpp-camera-calib/result\\\" -DRES_DIR=\\\"/root/workspace/cpp-camera-calib/res\\\" -DSPDLOG_COMPILED_LIB -DSPDLOG_FMT_EXTERNAL -DYAML_CPP_STATIC_DEFINE -isystem /usr/local/include/opencv4 -isystem /vcpkg/installed/x64-linux/include -O3 -DNDEBUG -std=gnu++17 -o CMakeFiles/calib.dir/src/calib.cpp.o -c /root/workspace/cpp-camera-calib/src/calib.cpp",
+  "file": "/root/workspace/cpp-camera-calib/src/calib.cpp",
+  "output": "CMakeFiles/calib.dir/src/calib.cpp.o"
+},
+{
+  "directory": "/root/workspace/cpp-camera-calib/build",
+  "command": "/usr/bin/c++ -DPROJECT_DIR=\\\"/root/workspace/cpp-camera-calib\\\" -DRESULT_DIR=\\\"/root/workspace/cpp-camera-calib/result\\\" -DRES_DIR=\\\"/root/workspace/cpp-camera-calib/res\\\" -DSPDLOG_COMPILED_LIB -DSPDLOG_FMT_EXTERNAL -DYAML_CPP_STATIC_DEFINE -isystem /usr/local/include/opencv4 -isystem /vcpkg/installed/x64-linux/include -O3 -DNDEBUG -std=gnu++17 -o CMakeFiles/frame_aquisition.dir/src/frame_aquisition.cpp.o -c /root/workspace/cpp-camera-calib/src/frame_aquisition.cpp",
+  "file": "/root/workspace/cpp-camera-calib/src/frame_aquisition.cpp",
+  "output": "CMakeFiles/frame_aquisition.dir/src/frame_aquisition.cpp.o"
+}
+]
