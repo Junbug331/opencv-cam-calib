@@ -74,6 +74,10 @@ int main()
                  << endl;
             cv::fisheye::initUndistortRectifyMap(K, dist_coeffs, cv::Mat(), new_K, oImageSize, CV_16SC2, map1, map2);
         }
+        else if (cam_model == CAM_MODEL::PINHOLE)
+        {
+            cv::initUndistortRectifyMap(K, dist_coeffs, cv::Mat(), K, oImageSize, CV_16SC2, map1, map2);
+        }
     }
 
     cv::VideoCapture cap(0, cv::CAP_V4L2);

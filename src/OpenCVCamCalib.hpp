@@ -15,6 +15,7 @@ enum CAM_MODEL
     PINHOLE = 0,
     FISHEYE = 1
 };
+
 double computeReprojectionErrors(const std::vector<std::vector<cv::Point3f>> &objectPoints,
                                  const std::vector<std::vector<cv::Point2f>> &imagePoints,
                                  const std::vector<cv::Mat> &rvecs, const std::vector<cv::Mat> &tvecs,

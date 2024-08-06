@@ -265,13 +265,15 @@ double cvCheckerboardCalibration(int a_nBoardWidth,
     a_rHeight = oImageSize.height;
 
     double dRmsReprojectionError;
+    std::vector<cv::Mat> _rvecs, _tvecs;
 
     if (a_eCamModel == CAM_MODEL::PINHOLE)
     {
         spdlog::info("Pinhole camera model calibration");
-        std::vector<cv::Mat> Rvecs, Tvecs;
-        int nFlags = cv::CALIB_FIX_ASPECT_RATIO + cv::CALIB_FIX_K3 +
-                     cv::CALIB_ZERO_TANGENT_DIST + cv::CALIB_FIX_PRINCIPAL_POINT;
+        int nFlags = 0;
+        nFlags |= cv::CALIB_FIX_ASPECT_RATIO;
+        nFlags |= cv::CALIB_ZERO_TANGENT_DIST;
+        nFlags |= cv::CALIB_FIX_PRINCIPAL_POINT;
 
         spdlog::info("Calibrating camera: This is slow! Please be patient");
         // dRmsReprojectionError is overall re-projection root mean square error in pixels
@@ -279,12 +281,18 @@ double cvCheckerboardCalibration(int a_nBoardWidth,
         // See: https://docs.opencv.org/4.x/d9/d0c/group__calib3d.html#ga3207604e4b1a1758aa66acb6ed5aa65d
         // From: https://docs.opencv.org/4.x/dc/dbb/tutorial_py_calibration.html - 'The closer the re-projection error is to zero, the more accurate the parameters we found are.'
         // Suggestion is that it should be less than 1
-        dRmsReprojectionError = cv::calibrateCamera(objPoints, imgPoints, oImageSize, a_rK, a_rDistCoeffs, Rvecs, Tvecs, nFlags);
+        dRmsReprojectionError = cv::calibrateCamera(objPoints,
+                                                    imgPoints,
+                                                    oImageSize,
+                                                    a_rK,
+                                                    a_rDistCoeffs,
+                                                    _rvecs,
+                                                    _tvecs,
+                                                    nFlags);
     }
     else
     {
         spdlog::info("Fisheye camera model calibration");
-        std::vector<cv::Mat> _rvecs, _tvecs;
         int nFlags = 0;
         nFlags |= cv::fisheye::CALIB_RECOMPUTE_EXTRINSIC;
 
@@ -296,14 +304,6 @@ double cvCheckerboardCalibration(int a_nBoardWidth,
                                                        _rvecs,
                                                        _tvecs,
                                                        nFlags);
-        std::cout << oImageSize.width * 0.5 << " x " << oImageSize.height * 0.5 << std::endl;
-        std::cout << "RMS error: " << dRmsReprojectionError << std::endl;
-        std::cout << "K: \n"
-                  << a_rK << std::endl
-                  << std::endl;
-        std::cout << "Distortion Coefficients:\n"
-                  << a_rDistCoeffs << std::endl
-                  << std::endl;
 
         // DEBUG
         if (0)
