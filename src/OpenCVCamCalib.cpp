@@ -49,6 +49,7 @@ double computeReprojectionErrors(const std::vector<std::vector<cv::Point3f>> &ob
 }
 
 std::optional<std::tuple<std::vector<cv::Point2f>, cv::Mat>> FindCheckerboard(std::filesystem::path a_oPath,
+                                                                              BOARD_PATTERN a_eBoardPattern,
                                                                               const int32_t a_nBoardWidth,
                                                                               const int32_t a_nBoardHeight,
                                                                               bool a_bUseFisheye)
@@ -66,15 +67,24 @@ std::optional<std::tuple<std::vector<cv::Point2f>, cv::Mat>> FindCheckerboard(st
         nChessBoardFlags |= cv::CALIB_CB_FAST_CHECK;
     }
 
-    if (cv::findChessboardCorners(oImage,
+    if (a_eBoardPattern == BOARD_PATTERN::CHESSBOARD &&
+        cv::findChessboardCorners(oImage,
                                   cv::Size(a_nBoardWidth, a_nBoardHeight),
                                   cornerPts, nChessBoardFlags))
     {
 
         oResult.emplace(std::make_tuple(std::move(cornerPts), std::move(oImage)));
     }
+    else if (a_eBoardPattern == BOARD_PATTERN::CIRCLES_GRID &&
+             cv::findCirclesGrid(oImage,
+                                 cv::Size(a_nBoardWidth, a_nBoardHeight),
+                                 cornerPts, cv::CALIB_CB_SYMMETRIC_GRID))
+    {
+        oResult.emplace(std::make_tuple(std::move(cornerPts), std::move(oImage)));
+    }
     else
     {
+        /*
         try
         {
             if (fs::remove(a_oPath))
@@ -90,6 +100,7 @@ std::optional<std::tuple<std::vector<cv::Point2f>, cv::Mat>> FindCheckerboard(st
         {
             std::cerr << "Error: " << e.what() << "\n";
         }
+        */
     }
 
     return oResult;
@@ -172,7 +183,8 @@ bool CheckChessBoard(const cv::Mat &a_rImage, int a_nBoardWidth, int a_nBoardHei
     return fPixelRatio > a_fThreshold;
 }
 
-double cvCheckerboardCalibration(int a_nBoardWidth,
+double cvCheckerboardCalibration(BOARD_PATTERN a_eBoardPattern,
+                                 int a_nBoardWidth,
                                  int a_nBoardHeight,
                                  float a_fSquareSize_mm,
                                  const std::string &a_rImageDirPath,
@@ -185,8 +197,8 @@ double cvCheckerboardCalibration(int a_nBoardWidth,
 {
     spdlog::info("Checker board width = {}, height = {}, square size (mm) = {}", a_nBoardWidth, a_nBoardHeight, a_fSquareSize_mm);
 
-    int nBoardWidth  = a_nBoardWidth - 1;
-    int nBoardHeight = a_nBoardHeight - 1;
+    int nBoardWidth  = (a_eBoardPattern == BOARD_PATTERN::CHESSBOARD) ? a_nBoardWidth - 1 : a_nBoardWidth;
+    int nBoardHeight = (a_eBoardPattern == BOARD_PATTERN::CHESSBOARD) ? a_nBoardHeight - 1 : a_nBoardHeight;
 
     std::vector<std::vector<cv::Point3f>> objPoints;
     std::vector<std::vector<cv::Point2f>> imgPoints;
@@ -223,7 +235,7 @@ double cvCheckerboardCalibration(int a_nBoardWidth,
     for (int i = 0; i < vImagePath.size(); ++i)
     {
         spdlog::info("Processing image {}", vImagePath.at(i));
-        auto oResult(FindCheckerboard(vImagePath.at(i), nBoardWidth, nBoardHeight, (a_eCamModel == CAM_MODEL::FISHEYE)));
+        auto oResult(FindCheckerboard(vImagePath.at(i), a_eBoardPattern, nBoardWidth, nBoardHeight, (a_eCamModel == CAM_MODEL::FISHEYE)));
         if (oResult)
         {
             auto &[cornerPts, oGray](*oResult);
@@ -295,6 +307,7 @@ double cvCheckerboardCalibration(int a_nBoardWidth,
         spdlog::info("Fisheye camera model calibration");
         int nFlags = 0;
         nFlags |= cv::fisheye::CALIB_RECOMPUTE_EXTRINSIC;
+        nFlags |= cv::fisheye::CALIB_FIX_PRINCIPAL_POINT;
 
         dRmsReprojectionError = cv::fisheye::calibrate(objPoints,
                                                        imgPoints,
@@ -331,7 +344,7 @@ double cvCheckerboardCalibration(int a_nBoardWidth,
         }
 
         // DEBUG
-        if (0)
+        if (1)
         {
             cv::Size dim     = oImageSize;
             cv::Mat scaled_K = a_rK.clone();
@@ -358,6 +371,84 @@ double cvCheckerboardCalibration(int a_nBoardWidth,
 
 
     spdlog::info("Lens calibration complete with error {} pixels", dRmsReprojectionError);
+
+    return dRmsReprojectionError;
+}
+
+double ChessBoardCalibration(int a_nBoardWidth,
+                             int a_nBoardHeight,
+                             float a_fSquareSize_mm,
+                             const std::vector<std::vector<cv::Point2f>> &a_rImgPoints,
+                             const cv::Size &a_rImgSize,
+                             cv::Mat &a_rK,
+                             cv::Mat &a_rDistCoeffs,
+                             std::vector<cv::Mat> &rvecs,
+                             std::vector<cv::Mat> &tvecs,
+                             CAM_MODEL a_eCamModel,
+                             const bool a_bDebug)
+{
+    std::vector<std::vector<cv::Point3f>> objPoints;
+
+    float fSquareSize_m = a_fSquareSize_mm / 1000.0;
+    std::vector<cv::Point3f> objPoint;
+    for (int i = a_nBoardHeight - 1; i >= 0; --i)
+    {
+        for (int j = 0; j < a_nBoardWidth; ++j)
+        {
+            objPoint.emplace_back(j * fSquareSize_m, i * fSquareSize_m, 0.0);
+        }
+    }
+
+    int nImages = a_rImgPoints.size();
+
+    for (int i = 0; i < nImages; ++i)
+        objPoints.push_back(objPoint);
+
+    double dRmsReprojectionError;
+
+    if (a_eCamModel == CAM_MODEL::PINHOLE)
+    {
+        if (a_bDebug)
+        {
+            spdlog::info("Pinhole camera model calibration");
+            spdlog::info("Calibrating camera: This is slow! Please be patient");
+        }
+        int nFlags = 0;
+        nFlags |= cv::CALIB_ZERO_TANGENT_DIST;
+        nFlags |= cv::CALIB_FIX_K3;
+
+        // dRmsReprojectionError is overall re-projection root mean square error in pixels
+        // See: https://stackoverflow.com/questions/29628445/meaning-of-the-retval-return-value-in-cv2-calibratecamera
+        // See: https://docs.opencv.org/4.x/d9/d0c/group__calib3d.html#ga3207604e4b1a1758aa66acb6ed5aa65d
+        // From: https://docs.opencv.org/4.x/dc/dbb/tutorial_py_calibration.html - 'The closer the re-projection error is to zero, the more accurate the parameters we found are.'
+        // Suggestion is that it should be less than 1
+        dRmsReprojectionError = cv::calibrateCamera(objPoints,
+                                                    a_rImgPoints,
+                                                    a_rImgSize,
+                                                    a_rK,
+                                                    a_rDistCoeffs,
+                                                    rvecs,
+                                                    tvecs,
+                                                    nFlags);
+    }
+    else
+    {
+        if (a_bDebug)
+            spdlog::info("Fisheye camera model calibration");
+        int nFlags = 0;
+        nFlags |= cv::fisheye::CALIB_RECOMPUTE_EXTRINSIC;
+        nFlags |= cv::fisheye::CALIB_FIX_PRINCIPAL_POINT;
+        nFlags |= cv::fisheye::CALIB_FIX_SKEW;
+
+        dRmsReprojectionError = cv::fisheye::calibrate(objPoints,
+                                                       a_rImgPoints,
+                                                       a_rImgSize,
+                                                       a_rK,
+                                                       a_rDistCoeffs,
+                                                       rvecs,
+                                                       tvecs,
+                                                       nFlags);
+    }
 
     return dRmsReprojectionError;
 }

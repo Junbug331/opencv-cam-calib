@@ -16,6 +16,13 @@ enum CAM_MODEL
     FISHEYE = 1
 };
 
+enum BOARD_PATTERN
+{
+    CHESSBOARD              = 0,
+    CIRCLES_GRID            = 1,
+    ASYMMETRIC_CIRCLES_GRID = 2
+};
+
 double computeReprojectionErrors(const std::vector<std::vector<cv::Point3f>> &objectPoints,
                                  const std::vector<std::vector<cv::Point2f>> &imagePoints,
                                  const std::vector<cv::Mat> &rvecs, const std::vector<cv::Mat> &tvecs,
@@ -24,6 +31,7 @@ double computeReprojectionErrors(const std::vector<std::vector<cv::Point3f>> &ob
 
 std::optional<std::tuple<std::vector<cv::Point2f>, cv::Mat>> FindCheckerboard(
         std::filesystem::path a_oPath,
+        BOARD_PATTERN a_eBoardPattern,
         const int32_t a_nBoardWidth,
         const int32_t a_nBoardHeight,
         bool a_bUseFisheye = false);
@@ -35,7 +43,8 @@ bool CheckChessBoard(const cv::Mat &image,
                      float *a_pRatio    = nullptr,
                      bool a_bShowDebug  = false);
 
-double cvCheckerboardCalibration(int a_nBoardWidth,
+double cvCheckerboardCalibration(BOARD_PATTERN a_eBoardPattern,
+                                 int a_nBoardWidth,
                                  int a_nBoardHeight,
                                  float a_fSquareSize_mm,
                                  const std::string &a_rImageDirPath,
@@ -45,6 +54,19 @@ double cvCheckerboardCalibration(int a_nBoardWidth,
                                  int &a_rHeight,
                                  CAM_MODEL a_eCamModel = CAM_MODEL::PINHOLE,
                                  const bool a_bDebug   = true);
+
+
+double ChessBoardCalibration(int a_nBoardWidth,
+                             int a_nBoardHeight,
+                             float a_fSquareSize_mm,
+                             const std::vector<std::vector<cv::Point2f>> &a_rImgPoints,
+                             const cv::Size &a_rImgSize,
+                             cv::Mat &a_rK,
+                             cv::Mat &a_rDistCoeffs,
+                             std::vector<cv::Mat> &rvecs,
+                             std::vector<cv::Mat> &tvecs,
+                             CAM_MODEL a_eCamModel = CAM_MODEL::PINHOLE,
+                             const bool a_bDebug   = true);
 
 
 #endif

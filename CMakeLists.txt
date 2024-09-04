@@ -22,7 +22,14 @@ INCLUDE_DIRECTORIES(${OpenCV_INCLUDE_DIRS})
 ADD_LIBRARY(calib-lib
     src/OpenCVCamCalib.cpp
     src/OpenCVCamCalib.hpp
+    src/BoardCalib.cpp
+    src/BoardCalib.hpp
+    src/FocusCalib.hpp
+    src/FocusCalib.cpp
 )
+
+# SerialCommEncoder
+ADD_SUBDIRECTORY(thirdparty/SerialCommEncoder)
 
 # Link the OpenCV library
 TARGET_LINK_LIBRARIES(calib-lib PUBLIC
@@ -45,5 +52,38 @@ ADD_EXECUTABLE(frame_aquisition
 )
 
 TARGET_LINK_LIBRARIES(frame_aquisition PRIVATE
+    calib-lib
+)
+
+ADD_EXECUTABLE(live_vid_calib
+    src/live_vid_calib.cpp
+)
+
+TARGET_LINK_LIBRARIES(live_vid_calib PRIVATE
+    calib-lib
+)
+
+ADD_EXECUTABLE(encoder_focus_calib
+    src/encoder_focus_calib.cpp
+)
+
+TARGET_LINK_LIBRARIES(encoder_focus_calib PRIVATE
+    calib-lib
+    SerialCommEncoder
+)
+
+ADD_EXECUTABLE(encoder_calib_test
+    src/encoder_calib_test.cpp
+)
+
+TARGET_LINK_LIBRARIES(encoder_calib_test PRIVATE
+    calib-lib
+)
+
+ADD_EXECUTABLE(encoder_focus_calib_debug
+    src/encoder_focus_calib_debug.cpp
+)
+
+TARGET_LINK_LIBRARIES(encoder_focus_calib_debug PRIVATE
     calib-lib
 )

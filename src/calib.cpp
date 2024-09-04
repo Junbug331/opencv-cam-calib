@@ -21,16 +21,41 @@ int main()
     int nCheckerboardWidth                    = config["checkerboard_width"].as<int>();
     int nCheckerboardHeight                   = config["checkerboard_height"].as<int>();
     double dSqureSize_mm                      = config["square_size_mm"].as<double>();
+    double circle_diameter                    = config["circle_diameter"].as<double>();
     std::string strCheckerBoardsImagesDirName = config["checkerboard_images_dir"].as<std::string>();
     std::string strCamModel                   = config["cam_model"].as<std::string>();
     std::string strCalibXMLName               = config["calib_xml_name"].as<std::string>();
+    int circle_grid_rows                      = config["circle_grid_rows"].as<int>();
+    int circle_grid_cols                      = config["circle_grid_cols"].as<int>();
     bool bShowDebug                           = config["show_debug"].as<bool>();
     fs::path oCheckBoardImagesDirPath         = oRESdirPath / fs::path(strCheckerBoardsImagesDirName);
     fs::path oCalibXMLFilePath                = oRESdirPath / fs::path(strCalibXMLName);
+    std::string str_board_pattern             = config["board_pattern"].as<std::string>();
     spdlog::info("oCheckBoardImagesDirPath: {}", oCheckBoardImagesDirPath.string());
     spdlog::info("oCalibXMLFilePath: {}", oCalibXMLFilePath.string());
     spdlog::info("strCamModel: {}", strCamModel);
     spdlog::info("show_debug: {}", bShowDebug);
+
+    // Board Pattern
+    BOARD_PATTERN board_pattern = BOARD_PATTERN::CHESSBOARD;
+    if (str_board_pattern == "chessboard")
+    {
+        board_pattern = BOARD_PATTERN::CHESSBOARD;
+    }
+    else if (str_board_pattern == "circles_grid")
+    {
+        board_pattern = BOARD_PATTERN::CIRCLES_GRID;
+    }
+    else if (str_board_pattern == "asymmetric_circles_grid")
+    {
+        board_pattern = BOARD_PATTERN::ASYMMETRIC_CIRCLES_GRID;
+    }
+    else
+    {
+        spdlog::error("Invalid board pattern");
+        throw std::runtime_error("Invalid board pattern");
+    }
+
 
     CAM_MODEL eCamModel = CAM_MODEL::PINHOLE;
 
@@ -56,9 +81,10 @@ int main()
     if (fs::exists(oCheckBoardImagesDirPath))
     {
         dRmsReprojectionError =
-                cvCheckerboardCalibration(nCheckerboardWidth,
-                                          nCheckerboardHeight,
-                                          dSqureSize_mm,
+                cvCheckerboardCalibration(board_pattern,
+                                          (board_pattern == BOARD_PATTERN::CHESSBOARD) ? nCheckerboardWidth : circle_grid_cols,
+                                          (board_pattern == BOARD_PATTERN::CHESSBOARD) ? nCheckerboardHeight : circle_grid_rows,
+                                          (board_pattern == BOARD_PATTERN::CHESSBOARD) ? dSqureSize_mm : circle_diameter,
                                           oCheckBoardImagesDirPath.string(),
                                           K, distCoeffs,
                                           nWidth,

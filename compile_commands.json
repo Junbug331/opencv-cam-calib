@@ -7,6 +7,18 @@
 },
 {
   "directory": "/root/workspace/cpp-camera-calib/build",
+  "command": "/usr/bin/c++ -DPROJECT_DIR=\\\"/root/workspace/cpp-camera-calib\\\" -DRESULT_DIR=\\\"/root/workspace/cpp-camera-calib/result\\\" -DRES_DIR=\\\"/root/workspace/cpp-camera-calib/res\\\" -DSPDLOG_COMPILED_LIB -DSPDLOG_FMT_EXTERNAL -DYAML_CPP_STATIC_DEFINE -isystem /usr/local/include/opencv4 -isystem /vcpkg/installed/x64-linux/include -O3 -DNDEBUG -std=gnu++17 -o CMakeFiles/calib-lib.dir/src/BoardCalib.cpp.o -c /root/workspace/cpp-camera-calib/src/BoardCalib.cpp",
+  "file": "/root/workspace/cpp-camera-calib/src/BoardCalib.cpp",
+  "output": "CMakeFiles/calib-lib.dir/src/BoardCalib.cpp.o"
+},
+{
+  "directory": "/root/workspace/cpp-camera-calib/build",
+  "command": "/usr/bin/c++ -DPROJECT_DIR=\\\"/root/workspace/cpp-camera-calib\\\" -DRESULT_DIR=\\\"/root/workspace/cpp-camera-calib/result\\\" -DRES_DIR=\\\"/root/workspace/cpp-camera-calib/res\\\" -DSPDLOG_COMPILED_LIB -DSPDLOG_FMT_EXTERNAL -DYAML_CPP_STATIC_DEFINE -isystem /usr/local/include/opencv4 -isystem /vcpkg/installed/x64-linux/include -O3 -DNDEBUG -std=gnu++17 -o CMakeFiles/calib-lib.dir/src/FocusCalib.cpp.o -c /root/workspace/cpp-camera-calib/src/FocusCalib.cpp",
+  "file": "/root/workspace/cpp-camera-calib/src/FocusCalib.cpp",
+  "output": "CMakeFiles/calib-lib.dir/src/FocusCalib.cpp.o"
+},
+{
+  "directory": "/root/workspace/cpp-camera-calib/build",
   "command": "/usr/bin/c++ -DPROJECT_DIR=\\\"/root/workspace/cpp-camera-calib\\\" -DRESULT_DIR=\\\"/root/workspace/cpp-camera-calib/result\\\" -DRES_DIR=\\\"/root/workspace/cpp-camera-calib/res\\\" -DSPDLOG_COMPILED_LIB -DSPDLOG_FMT_EXTERNAL -DYAML_CPP_STATIC_DEFINE -isystem /usr/local/include/opencv4 -isystem /vcpkg/installed/x64-linux/include -O3 -DNDEBUG -std=gnu++17 -o CMakeFiles/calib.dir/src/calib.cpp.o -c /root/workspace/cpp-camera-calib/src/calib.cpp",
   "file": "/root/workspace/cpp-camera-calib/src/calib.cpp",
   "output": "CMakeFiles/calib.dir/src/calib.cpp.o"
@@ -16,5 +28,35 @@
   "command": "/usr/bin/c++ -DPROJECT_DIR=\\\"/root/workspace/cpp-camera-calib\\\" -DRESULT_DIR=\\\"/root/workspace/cpp-camera-calib/result\\\" -DRES_DIR=\\\"/root/workspace/cpp-camera-calib/res\\\" -DSPDLOG_COMPILED_LIB -DSPDLOG_FMT_EXTERNAL -DYAML_CPP_STATIC_DEFINE -isystem /usr/local/include/opencv4 -isystem /vcpkg/installed/x64-linux/include -O3 -DNDEBUG -std=gnu++17 -o CMakeFiles/frame_aquisition.dir/src/frame_aquisition.cpp.o -c /root/workspace/cpp-camera-calib/src/frame_aquisition.cpp",
   "file": "/root/workspace/cpp-camera-calib/src/frame_aquisition.cpp",
   "output": "CMakeFiles/frame_aquisition.dir/src/frame_aquisition.cpp.o"
+},
+{
+  "directory": "/root/workspace/cpp-camera-calib/build",
+  "command": "/usr/bin/c++ -DPROJECT_DIR=\\\"/root/workspace/cpp-camera-calib\\\" -DRESULT_DIR=\\\"/root/workspace/cpp-camera-calib/result\\\" -DRES_DIR=\\\"/root/workspace/cpp-camera-calib/res\\\" -DSPDLOG_COMPILED_LIB -DSPDLOG_FMT_EXTERNAL -DYAML_CPP_STATIC_DEFINE -isystem /usr/local/include/opencv4 -isystem /vcpkg/installed/x64-linux/include -O3 -DNDEBUG -std=gnu++17 -o CMakeFiles/live_vid_calib.dir/src/live_vid_calib.cpp.o -c /root/workspace/cpp-camera-calib/src/live_vid_calib.cpp",
+  "file": "/root/workspace/cpp-camera-calib/src/live_vid_calib.cpp",
+  "output": "CMakeFiles/live_vid_calib.dir/src/live_vid_calib.cpp.o"
+},
+{
+  "directory": "/root/workspace/cpp-camera-calib/build",
+  "command": "/usr/bin/c++ -DPROJECT_DIR=\\\"/root/workspace/cpp-camera-calib\\\" -DRESULT_DIR=\\\"/root/workspace/cpp-camera-calib/result\\\" -DRES_DIR=\\\"/root/workspace/cpp-camera-calib/res\\\" -DSPDLOG_COMPILED_LIB -DSPDLOG_FMT_EXTERNAL -DYAML_CPP_STATIC_DEFINE -I/root/workspace/cpp-camera-calib/thirdparty/SerialCommEncoder -isystem /usr/local/include/opencv4 -isystem /vcpkg/installed/x64-linux/include -O3 -DNDEBUG -std=gnu++17 -o CMakeFiles/encoder_focus_calib.dir/src/encoder_focus_calib.cpp.o -c /root/workspace/cpp-camera-calib/src/encoder_focus_calib.cpp",
+  "file": "/root/workspace/cpp-camera-calib/src/encoder_focus_calib.cpp",
+  "output": "CMakeFiles/encoder_focus_calib.dir/src/encoder_focus_calib.cpp.o"
+},
+{
+  "directory": "/root/workspace/cpp-camera-calib/build",
+  "command": "/usr/bin/c++ -DPROJECT_DIR=\\\"/root/workspace/cpp-camera-calib\\\" -DRESULT_DIR=\\\"/root/workspace/cpp-camera-calib/result\\\" -DRES_DIR=\\\"/root/workspace/cpp-camera-calib/res\\\" -DSPDLOG_COMPILED_LIB -DSPDLOG_FMT_EXTERNAL -DYAML_CPP_STATIC_DEFINE -isystem /usr/local/include/opencv4 -isystem /vcpkg/installed/x64-linux/include -O3 -DNDEBUG -std=gnu++17 -o CMakeFiles/encoder_calib_test.dir/src/encoder_calib_test.cpp.o -c /root/workspace/cpp-camera-calib/src/encoder_calib_test.cpp",
+  "file": "/root/workspace/cpp-camera-calib/src/encoder_calib_test.cpp",
+  "output": "CMakeFiles/encoder_calib_test.dir/src/encoder_calib_test.cpp.o"
+},
+{
+  "directory": "/root/workspace/cpp-camera-calib/build",
+  "command": "/usr/bin/c++ -DPROJECT_DIR=\\\"/root/workspace/cpp-camera-calib\\\" -DRESULT_DIR=\\\"/root/workspace/cpp-camera-calib/result\\\" -DRES_DIR=\\\"/root/workspace/cpp-camera-calib/res\\\" -DSPDLOG_COMPILED_LIB -DSPDLOG_FMT_EXTERNAL -DYAML_CPP_STATIC_DEFINE -isystem /usr/local/include/opencv4 -isystem /vcpkg/installed/x64-linux/include -O3 -DNDEBUG -std=gnu++17 -o CMakeFiles/encoder_focus_calib_debug.dir/src/encoder_focus_calib_debug.cpp.o -c /root/workspace/cpp-camera-calib/src/encoder_focus_calib_debug.cpp",
+  "file": "/root/workspace/cpp-camera-calib/src/encoder_focus_calib_debug.cpp",
+  "output": "CMakeFiles/encoder_focus_calib_debug.dir/src/encoder_focus_calib_debug.cpp.o"
+},
+{
+  "directory": "/root/workspace/cpp-camera-calib/build",
+  "command": "/usr/bin/c++ -DPROJECT_DIR=\\\"/root/workspace/cpp-camera-calib\\\" -DRESULT_DIR=\\\"/root/workspace/cpp-camera-calib/result\\\" -DRES_DIR=\\\"/root/workspace/cpp-camera-calib/res\\\" -DYAML_CPP_STATIC_DEFINE -I/usr/local/include/opencv4 -I/root/workspace/cpp-camera-calib/thirdparty/SerialCommEncoder -isystem /vcpkg/installed/x64-linux/include -O3 -DNDEBUG -std=gnu++17 -o thirdparty/SerialCommEncoder/CMakeFiles/SerialCommEncoder.dir/SerialCommEncoder.cpp.o -c /root/workspace/cpp-camera-calib/thirdparty/SerialCommEncoder/SerialCommEncoder.cpp",
+  "file": "/root/workspace/cpp-camera-calib/thirdparty/SerialCommEncoder/SerialCommEncoder.cpp",
+  "output": "thirdparty/SerialCommEncoder/CMakeFiles/SerialCommEncoder.dir/SerialCommEncoder.cpp.o"
 }
 ]

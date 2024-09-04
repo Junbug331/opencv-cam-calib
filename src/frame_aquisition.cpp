@@ -22,6 +22,11 @@ int main()
 
     std::string strCamModel     = config["cam_model"].as<std::string>();
     std::string strCalibXMLName = config["calib_xml_name"].as<std::string>();
+    double balance              = config["balance"].as<double>();
+    int img_width               = config["image_width"].as<int>();
+    int img_height              = config["image_height"].as<int>();
+    int device_id               = config["device_id"].as<int>();
+    double fps                  = config["fps"].as<double>();
     spdlog::info("strCalibXMLName: {}", strCalibXMLName);
 
     CAM_MODEL cam_model = CAM_MODEL::PINHOLE;
@@ -43,7 +48,6 @@ int main()
     fs::path oCalibXMLFilePath = res_dir_path / fs::path(strCalibXMLName);
     cv::Mat K, dist_coeffs;
     cv::Mat map1, map2;
-    int img_width, img_height;
 
     if (fs::exists(oCalibXMLFilePath))
     {
@@ -68,7 +72,7 @@ int main()
         if (cam_model == CAM_MODEL::FISHEYE)
         {
             cv::Mat new_K;
-            cv::fisheye::estimateNewCameraMatrixForUndistortRectify(K, dist_coeffs, oImageSize, cv::Matx33d::eye(), new_K, 1.0);
+            cv::fisheye::estimateNewCameraMatrixForUndistortRectify(K, dist_coeffs, oImageSize, cv::Matx33d::eye(), new_K, balance);
             cout << "new_K\n";
             cout << new_K << endl
                  << endl;
@@ -115,8 +119,9 @@ int main()
     int image_counter = 0;
     bool is_recording = false;
     cv::VideoWriter video_writer;
+    cv::VideoWriter video_writer_undist;
 
-    double fps = cap.get(cv::CAP_PROP_FPS);
+    fps = cap.get(cv::CAP_PROP_FPS);
     spdlog::info("FPS: {}", fps);
 
     cap >> img;
@@ -183,6 +188,7 @@ int main()
             {
                 fs::path video_path = result_dir_path / fs::path("recorded_video.avi");
                 video_writer.open(video_path.string(), cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 30, img.size());
+                video_writer_undist.open(result_dir_path / fs::path("recorded_video_undist.avi").string(), cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 30, img.size());
                 if (!video_writer.isOpened())
                 {
                     spdlog::error("Error opening video writer");
@@ -192,6 +198,15 @@ int main()
                     is_recording = true;
                     spdlog::info("Started recording video to: {}", video_path.string());
                 }
+
+                if (!video_writer_undist.isOpened())
+                {
+                    spdlog::error("Error opening video writer for undistorted video");
+                }
+                else
+                {
+                    spdlog::info("Started recording undistorted video to: {}", video_path.string());
+                }
             }
         }
         else if (key == 's')// 's' key to stop recording
@@ -200,6 +215,7 @@ int main()
             {
                 is_recording = false;
                 video_writer.release();
+                video_writer_undist.release();
                 spdlog::info("Stopped recording video");
             }
         }
@@ -207,6 +223,8 @@ int main()
         if (is_recording)
         {
             video_writer.write(img);
+            if (!undist_img.empty())
+                video_writer_undist.write(undist_img);
         }
     }
 
