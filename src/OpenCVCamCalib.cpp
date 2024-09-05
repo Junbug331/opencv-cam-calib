@@ -406,6 +406,9 @@ double ChessBoardCalibration(int a_nBoardWidth,
 
     double dRmsReprojectionError;
 
+    std::cout << "Number of image Points: " << a_rImgPoints.size() << std::endl;
+    std::cout << "Number of object Points: " << objPoints.size() << std::endl;
+
     if (a_eCamModel == CAM_MODEL::PINHOLE)
     {
         if (a_bDebug)
@@ -449,6 +452,7 @@ double ChessBoardCalibration(int a_nBoardWidth,
                                                        tvecs,
                                                        nFlags);
     }
+
 
     return dRmsReprojectionError;
 }

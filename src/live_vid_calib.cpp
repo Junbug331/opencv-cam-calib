@@ -37,10 +37,8 @@ int main()
     std::string strCalibXMLName = config["calib_xml_name"].as<std::string>();
     std::string str_board_type  = config["board_pattern"].as<std::string>();
     double balance              = config["balance"].as<double>();
-    int board_width             = config["checkerboard_width"].as<int>();
-    int board_height            = config["checkerboard_height"].as<int>();
-    int circle_grid_rows        = config["circle_grid_rows"].as<int>();
-    int circle_grid_cols        = config["circle_grid_cols"].as<int>();
+    int board_width             = config["board_width"].as<int>();
+    int board_height            = config["board_height"].as<int>();
     int img_width               = config["image_width"].as<int>();
     int img_height              = config["image_height"].as<int>();
     int device_id               = config["device_id"].as<int>();
@@ -184,6 +182,7 @@ int main()
     // Create the SimpleBlobDetector with the parameters
     cv::Ptr<cv::SimpleBlobDetector> detector = cv::SimpleBlobDetector::create(params);
 
+    spdlog::info("XML path: {}", oCalibXMLFilePath.string());
 
     while (1)
     {
@@ -202,7 +201,6 @@ int main()
         {
             img.copyTo(show_img);
             img.copyTo(show_img_gray_res);
-            img.copyTo(show_img_binary_res);
         }
 
         // gray (GRAY)
@@ -210,23 +208,6 @@ int main()
             cv::cvtColor(img, gray, cv::COLOR_BGR2GRAY);
         else
             gray = img.clone();
-
-        // Apply adaptive thresholding
-        cv::Mat binaryImage;
-        cv::threshold(gray, binaryImage, 128, 255, cv::THRESH_OTSU);
-        // cv::adaptiveThreshold(
-        //         gray,                          // Input grayscale image
-        //         binaryImage,                   // Output binary image
-        //         255,                           // Maximum value to use with the THRESH_BINARY thresholding type
-        //         cv::ADAPTIVE_THRESH_GAUSSIAN_C,// Adaptive method (mean or Gaussian)
-        //         cv::THRESH_BINARY,             // Thresholding type (binary in this case)
-        //         11,                            // Block size (size of a pixel neighborhood used to calculate threshold value)
-        //         2                              // Constant subtracted from the mean or weighted mean
-        // );
-
-        // std::vector<cv::KeyPoint> keypoints;
-        // orb->detect(gray, keypoints);
-        // cv::drawKeypoints(show_img, keypoints, show_img, cv::Scalar(0, 255, 0), cv::DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
 
         // Add "RECORDING" text if recording
         if (is_recording)
@@ -250,21 +231,21 @@ int main()
         else if (board_pattern == BOARD_PATTERN::CIRCLES_GRID)
         {
             bool gray_result = cv::findCirclesGrid(gray,
-                                                   cv::Size(circle_grid_cols, circle_grid_rows),
+                                                   cv::Size(board_width, board_height),
                                                    corner_points,
                                                    cv::CALIB_CB_SYMMETRIC_GRID,
                                                    detector);
             if (gray_result)
             {
                 cv::drawChessboardCorners(show_img_gray_res,
-                                          cv::Size(circle_grid_cols, circle_grid_rows),
+                                          cv::Size(board_width, board_height),
                                           corner_points,
                                           true);
             }
         }
 
         cv::imshow("Original", show_img);
-        cv::imshow("Gray Result", show_img_gray_res);
+        // cv::imshow("Gray Result", show_img_gray_res);
         // cv::imshow("Undistorted", imgUndistorted);
 
 
@@ -276,7 +257,7 @@ int main()
         }
         else if (key == 32 /* space bar */)
         {
-            if (!corner_points.empty())
+            if (corner_points.size() == board_height * board_width)
             {
                 std::string img_name = std::to_string(image_points.size()) + ".png";
                 fs::path image_path  = image_dir_path / fs::path(img_name);
@@ -344,7 +325,7 @@ int main()
                                            cam_model,
                                            true);
         spdlog::info("RMS: {}", rms);
-
+        spdlog::info("XML path: {}", oCalibXMLFilePath.string());
         cv::FileStorage fileStorage(oCalibXMLFilePath.string(), cv::FileStorage::WRITE);
 
         fileStorage << "K" << K;

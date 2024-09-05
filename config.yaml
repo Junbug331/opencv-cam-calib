@@ -1,21 +1,16 @@
 debug_data_dir: "result/vive-calib-data-many"
 device_id: 2
 board_width: 10
-board_height: 9
+board_height: 7
 img_width: 1920
 img_height: 1080
-fps: 30
-pattern_size_mm: 45.0
-board_pattern: "circles_grid"
+fps: 5
+pattern_size_mm: 30.0
+board_pattern: "chessboard"
 cam_model: "pinhole"
 image_width: 1920
 image_height: 1080
-checkerboard_width: 10 # test board 8 # office board 9
-checkerboard_height: 9 #test board 6 # office board 6
-circle_grid_cols: 10
-circle_grid_rows: 9
 square_size_mm: 15.0 #115.7 #30.88 #115.70
-circle_diameter: 15.0
 balance: 0.0
 checkerboard_images_dir: "2024-08-19_07-04-19"
 show_debug: false
